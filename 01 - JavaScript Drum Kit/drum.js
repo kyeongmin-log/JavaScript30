@@ -1,26 +1,37 @@
-const keys = Array.from(document.querySelectorAll(".key"));
-const audio = Array.from(document.querySelectorAll("audio"));
+const keys = document.querySelectorAll(".key");
 
-function searchSound(key) {
-  const playKey = keys.filter((ch) => ch.firstElementChild.textContent === key);
-  const dataKey = playKey[0].getAttribute("data-key");
-  const playAudio = audio.filter(
-    (sound) => sound.getAttribute("data-key") === dataKey
+// Use Keyboard
+function playKeyboardAudio(event) {
+  const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
+  const key = document.querySelector(`.key[data-key="${event.keyCode}"]`);
+  if (!audio) return;
+
+  audio.currentTime = 0;
+  audio.play();
+  key.classList.add("playing");
+}
+// Use Mouse
+function playMouseAudio(event) {
+  const clickNode = event.target.parentNode;
+  if (clickNode.className !== "key") return;
+  const audio = document.querySelector(
+    `audio[data-key="${clickNode.dataset.key}"]`
   );
+  const key = document.querySelector(
+    `.key[data-key="${clickNode.dataset.key}"]`
+  );
+  if (!audio) return;
 
-  return {
-    audio: playAudio[0],
-    key: playKey[0],
-  };
+  audio.currentTime = 0;
+  audio.play();
+  key.classList.add("playing");
 }
 
-window.addEventListener("keydown", (event) => {
-  const playSound = searchSound(event.key.toUpperCase());
-  playSound.key.classList.add("playing");
-  playSound.audio.play();
-});
+function removeTransition(event) {
+  if (event.propertyName !== "transform") return;
+  this.classList.remove("playing");
+}
 
-window.addEventListener("keyup", (event) => {
-  const playSound = searchSound(event.key.toUpperCase());
-  playSound.key.classList.remove("playing");
-});
+window.addEventListener("keydown", playKeyboardAudio);
+window.addEventListener("click", playMouseAudio);
+keys.forEach((key) => key.addEventListener("transitionend", removeTransition));
