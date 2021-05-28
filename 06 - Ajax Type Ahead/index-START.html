@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      const cities = [];
+      const suggestions = document.querySelector(".suggestions");
+      const search = document.querySelector(".search");
+
+      // endpoint 데이터를 cities에 복사한다.
+      fetch(endpoint)
+        .then((response) => response.json())
+        .then((data) => {
+          cities.push(...data);
+        });
+
+      // 찾은 값을 li로 만들어서 넣는다.
+      function inputData(datas) {
+        datas.map((data) => {
+          const dataRow = document.createElement("li");
+          const cityAndState = document.createElement("span");
+          const population = document.createElement("span");
+
+          population.setAttribute("class", "population");
+
+          cityAndState.textContent = `${data.city}, ${data.state}`;
+          population.textContent = parseInt(data.population).toLocaleString();
+
+          dataRow.appendChild(cityAndState);
+          dataRow.appendChild(population);
+          suggestions.appendChild(dataRow);
+        });
+      }
+
+      // inputBox에 입력한 값을 cities에서 찾아서 inputData()로 넘겨줌.
+      function searchCity(cities, serchValue) {
+        if (serchValue === "") {
+          suggestions.innerHTML = `
+          <li>Filter for a city</li>
+          <li>or a state</li>
+          `;
+          return;
+        }
+        suggestions.innerHTML = "";
+        const datas = cities.filter(
+          (data) =>
+            data.city.toLowerCase().includes(serchValue.toLowerCase()) || data.state.toLowerCase().includes(serchValue.toLowerCase())
+        );
+        inputData(datas);
+      }
+
+      search.addEventListener("input", () => {
+        searchCity(cities, search.value);
+      });
+    </script>
+  </body>
+</html>
