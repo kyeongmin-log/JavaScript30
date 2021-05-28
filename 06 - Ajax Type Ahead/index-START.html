@@ -19,53 +19,49 @@
 
       const cities = [];
       const suggestions = document.querySelector(".suggestions");
-      const search = document.querySelector(".search");
+      const searchInput = document.querySelector(".search");
 
-      // endpoint 데이터를 cities에 복사한다.
       fetch(endpoint)
         .then((response) => response.json())
-        .then((data) => {
-          cities.push(...data);
-        });
+        .then((data) => cities.push(...data));
 
-      // 찾은 값을 li로 만들어서 넣는다.
-      function inputData(datas) {
-        datas.map((data) => {
-          const dataRow = document.createElement("li");
-          const cityAndState = document.createElement("span");
-          const population = document.createElement("span");
-
-          population.setAttribute("class", "population");
-
-          cityAndState.textContent = `${data.city}, ${data.state}`;
-          population.textContent = parseInt(data.population).toLocaleString();
-
-          dataRow.appendChild(cityAndState);
-          dataRow.appendChild(population);
-          suggestions.appendChild(dataRow);
+      function findMatchs(searchWord, cities) {
+        console.log(searchWord);
+        return cities.filter((place) => {
+          const regex = new RegExp(searchWord, "gi");
+          return place.city.match(regex) || place.state.match(regex);
         });
       }
 
-      // inputBox에 입력한 값을 cities에서 찾아서 inputData()로 넘겨줌.
-      function searchCity(cities, serchValue) {
-        if (serchValue === "") {
+      function displayMatchs() {
+        if (this.value === "") {
           suggestions.innerHTML = `
           <li>Filter for a city</li>
           <li>or a state</li>
           `;
           return;
         }
-        suggestions.innerHTML = "";
-        const datas = cities.filter(
-          (data) =>
-            data.city.toLowerCase().includes(serchValue.toLowerCase()) || data.state.toLowerCase().includes(serchValue.toLowerCase())
-        );
-        inputData(datas);
+
+        const findDataSet = findMatchs(this.value, cities);
+
+        const html = findDataSet
+          .map((data) => {
+            const regex = new RegExp(this.value, "gi");
+            const cityHighlight = data.city.replace(regex, `<span class="hl">${this.value}</span>`);
+            const stateHighlight = data.state.replace(regex, `<span class="hl">${this.value}</span>`);
+            return `
+          <li>
+            <span>${cityHighlight}, ${stateHighlight}</span>
+            <span>${parseInt(data.population).toLocaleString()}</span>
+          </li>
+          `;
+          })
+          .join("");
+
+        suggestions.innerHTML = html;
       }
 
-      search.addEventListener("input", () => {
-        searchCity(cities, search.value);
-      });
+      searchInput.addEventListener("input", displayMatchs);
     </script>
   </body>
 </html>
