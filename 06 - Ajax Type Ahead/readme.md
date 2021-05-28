@@ -33,7 +33,7 @@
 
 ## 찾아본 내용 정리
 
-```js
+```
 1. What is the meaning RexExp?
     > Regular Expression의 약자. 정규표현식이란 뜻을 가지고 있다.
       정규표현식이란 문자열에서 특정 내용을 찾거나 대체 또는 발췌하는데 사용된다.
