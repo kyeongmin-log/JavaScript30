@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Canvas</title>
+  </head>
+  <body>
+    <button class="clear__btn">clear</button>
+    <br />
+    <canvas id="draw" width="800" height="800"></canvas>
+    <script>
+      const draw = document.querySelector("#draw");
+      const ctx = draw.getContext("2d");
+      const clearBtn = document.querySelector(".clear__btn");
+      let isDrawing = false;
+      let x = 0;
+      let y = 0;
+
+      let customLineWidth = 80;
+      let isLine = false;
+
+      function drawLine(ctx, x1, y1, x2, y2) {
+        ctx.beginPath();
+        var gradient = ctx.createLinearGradient(0, 0, 800, 800);
+        gradient.addColorStop(1 / 6, "orange");
+        gradient.addColorStop(2 / 6, "yellow");
+        gradient.addColorStop(3 / 6, "green");
+        gradient.addColorStop(4 / 6, "blue");
+        gradient.addColorStop(5 / 6, "indigo");
+        gradient.addColorStop(6 / 6, "violet");
+
+        if (customLineWidth >= 80) {
+          isLine = true;
+        } else if (customLineWidth <= 1) {
+          isLine = false;
+        }
+
+        if (isLine) {
+          customLineWidth -= 0.5;
+          ctx.lineWidth = customLineWidth;
+        } else {
+          customLineWidth += 0.5;
+          ctx.lineWidth = customLineWidth;
+        }
+
+        ctx.strokeStyle = gradient;
+        ctx.lineCap = "round";
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.closePath();
+      }
+
+      draw.addEventListener("mousedown", (event) => {
+        x = event.offsetX;
+        y = event.offsetY;
+        isDrawing = true;
+      });
+
+      draw.addEventListener("mousemove", (event) => {
+        if (isDrawing) {
+          drawLine(ctx, x, y, event.offsetX, event.offsetY);
+          x = event.offsetX;
+          y = event.offsetY;
+        }
+      });
+
+      draw.addEventListener("mouseup", (event) => {
+        if (isDrawing) {
+          x.offsetX = 0;
+          y.offsetY = 0;
+          isDrawing = false;
+        }
+      });
+
+      clearBtn.addEventListener("click", () => {
+        ctx.clearRect(0, 0, draw.width, draw.height);
+        ctx.beginPath();
+      });
+    </script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      .clear__btn {
+        background-color: rgb(22, 22, 22);
+        border-radius: 4px;
+        margin-left: 4px;
+        padding: 12px;
+        color: whitesmoke;
+        font-size: 24px;
+        outline: none;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </body>
+</html>
