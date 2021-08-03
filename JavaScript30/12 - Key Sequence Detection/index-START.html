@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../home.js" defer></script>
+    <link rel="stylesheet" href="../home.css" />
+    <script src="https://kit.fontawesome.com/21dd925bf1.js" crossorigin="anonymous"></script>
+    <title>Key Detection</title>
+    <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
+  </head>
+  <body>
+    <p style="text-align: center; font-size: 36px">Write down kyeongmin!</p>
+    <script>
+      const arr = [];
+      const secretCode = "kyeongmin";
+
+      window.addEventListener("keyup", (event) => {
+        console.log(event.key);
+        arr.push(event.key);
+        arr.splice(-secretCode.length - 1, arr.length - secretCode.length);
+        console.log(arr);
+        if (arr.join("").includes(secretCode)) {
+          console.log("yes");
+          cornify_add();
+        }
+      });
+    </script>
+  </body>
+</html>
