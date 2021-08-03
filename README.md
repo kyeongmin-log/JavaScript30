@@ -20,4 +20,4 @@
 
 ## 결과
 
-> 배포 사이트 제작 중
+> 결과 사이트 : https://kyeongmin-log.github.io/JavaScript30/
